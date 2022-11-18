@@ -1,156 +1,31 @@
 import { useState } from 'react';
-const products = [
-  {
-    id: 1,
-    desc: 'The best crocs in town',
-    image:
-      'https://images-na.ssl-images-amazon.com/images/I/81WnMBnbWSL._AC_UL450_SR450,320_.jpg',
-    title: 'Crocs, unisex',
-    rating: 'Rating: 12,000',
-    price: 'Starting from $10',
-  },
-  {
-    id: 2,
-    desc: 'Hoodies are so fun to wear',
-    image:
-      'https://images-na.ssl-images-amazon.com/images/I/61n+vIfzOKL._AC_UL450_SR450,320_.jpg',
-    title: 'Hoodie',
-    rating: 'Rating: 12,000',
-    price: 'Starting from $10',
-  },
-  {
-    id: 3,
-    desc: 'Can never go wrong with socks',
-    image:
-      'https://images-na.ssl-images-amazon.com/images/I/817EpDqsL-L._AC_UL450_SR450,320_.jpg',
-    title: 'Socks',
-    rating: 'Rating: 12,000',
-    price: 'Starting from $10',
-  },
-  {
-    id: 4,
-    desc: 'Can never go wrong with socks',
-    image:
-      'https://images-na.ssl-images-amazon.com/images/I/817EpDqsL-L._AC_UL450_SR450,320_.jpg',
-    title: 'Cooking',
-    rating: 'Rating: 12,000',
-    price: 'Starting from $10',
-  },
-];
 
 const App = () => {
-  const [name, setName] = useState('Precious');
+  const [count, setCount] = useState(0);
+  const [userInput, setUserInput] = useState(null);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setCount(count + +userInput);
+  };
   return (
-    <>
-      <h1>My name is {name}</h1>
-      <button onClick={() => setName('Blessing')}>Change name</button>
-      <h1>Best Sellers in Clothing, Shoes & Jewelry</h1>
-      <div className="item">
-        {products.map((product) => {
-          const { id, title, image, desc, rating, price } = product;
-          return (
-            <article className="single-product">
-              <Product
-                key={id}
-                title={title}
-                image={image}
-                rating={rating}
-                price={price}
-
-                // {...product}
-              />
-            </article>
-          );
-        })}
+    <div style={{ display: 'grid', gap: '10px', placeItems: 'center' }}>
+      <h2>Welcome to my count app</h2>
+      <h1>{count}</h1>
+      <div style={{ fontSize: '36px', display: 'flex', gap: '10px' }}>
+        <button onClick={() => setCount(count + 1)}>Increase</button>
+        <button onDoubleClick={() => setCount(0)}>Reset</button>
+        <button onClick={() => setCount(count - 1)}>Decrease</button>
       </div>
-    </>
+      <form onSubmit={handleSubmit}>
+        <label>Enter a number</label>
+        <input
+          type="text"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+        />
+        <button>Submit</button>
+      </form>
+    </div>
   );
 };
-
-const Product = ({ desc, image, title, rating, price }) => {
-  return (
-    <>
-      <img src={image} alt="product avartar" width="300" />
-      <p>{desc}</p>
-      <h4>{title}</h4>
-      <p>{rating}</p>
-      <p>{price}</p>
-    </>
-  );
-};
-
-// const Product1 = () => {
-//   return (
-//     <>
-//       <img
-//         src="https://images-na.ssl-images-amazon.com/images/I/61n+vIfzOKL._AC_UL450_SR450,320_.jpg"
-//         alt="product avartar"
-//         width="300"
-//       />
-//       <h4>Hoodie</h4>
-//       <p>Rating: 14,000</p>
-//       <p>Starting from $10</p>
-//     </>
-//   );
-// };
-
-// const Product2 = () => {
-//   return (
-//     <>
-//       <img
-//         src="https://images-na.ssl-images-amazon.com/images/I/817EpDqsL-L._AC_UL450_SR450,320_.jpg"
-//         alt="product avartar"
-//         width="300"
-//       />
-//       <h4>Socks</h4>
-//       <p>Rating: 8,000</p>
-//       <p>Starting from $5</p>
-//     </>
-//   );
-// };
-
-// const Image = () => {
-//   return (
-//     <img
-//       src="https://images-na.ssl-images-amazon.com/images/I/81WnMBnbWSL._AC_UL450_SR450,320_.jpg"
-//       alt="product avartar"
-//       width="300"
-//     />
-//   );
-// };
-
-// const Title = () => {
-//   return <h4>Crocs, unisex</h4>;
-// };
-
-// const Rating = () => {
-//   return <p>Rating: 12,000</p>;
-// };
-
-// function Price() {
-//   return <p>Starting from $10</p>;
-
-// }
-
-// <Product
-//   desc="The best crocs in town"
-//   image="https://images-na.ssl-images-amazon.com/images/I/81WnMBnbWSL._AC_UL450_SR450,320_.jpg"
-//   title="Crocs, unisex"
-//   rating="Rating: 12,000"
-//   price="Starting from $10"
-// />
-// <Product
-//   desc="Hoodies are so fun to wear"
-//   image="https://images-na.ssl-images-amazon.com/images/I/61n+vIfzOKL._AC_UL450_SR450,320_.jpg"
-//   title="Hoodie"
-//   rating="Rating: 12,000"
-//   price="Starting from $10"
-// />
-// <Product
-//   desc="Can never go wrong with socks"
-//   image="https://images-na.ssl-images-amazon.com/images/I/817EpDqsL-L._AC_UL450_SR450,320_.jpg"
-//   title="Socks"
-//   rating="Rating: 12,000"
-//   price="Starting from $10"
-// />
 export default App;
