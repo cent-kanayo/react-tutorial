@@ -1,37 +1,67 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const App = () => {
-  const [player1Score, setPlayer1Score] = useState(0);
-  const [player2Score, setPlayer2core] = useState(0);
-  const [player1, setPlayer1] = useState(0);
-  const [player2, setPlayer2] = useState(0);
-  const [round, setRound] = useState(1);
-
-  const handlePlay = () => {
-    const player1 = Math.floor(Math.random() * 10) + 1;
-    const player2 = Math.floor(Math.random() * 10) + 1;
-    setPlayer1(player1);
-    setPlayer2(player2);
-    setRound(round + 1);
+  const userLi = localStorage.getItem('user');
+  const userList = userLi ? JSON.parse(userLi) : [];
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [users, setUsers] = useState(userList);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newUser = {
+      username: username,
+      password: password,
+      email: email,
+      id: new Date().getTime(),
+    };
+    setUsers((prev) => [...prev, newUser]);
   };
   useEffect(() => {
-    const sum = player1 + player2;
-    if (sum % 2 === 0) {
-      setPlayer1Score(player1Score + 1);
-    } else {
-      setPlayer2core(player2Score + 1);
-    }
-  }, []);
-
+    localStorage.setItem('user', JSON.stringify(users));
+  }, [users]);
+  const handleClick = (id) => {
+    setUsers(users.filter((user) => user.id === id));
+  };
   return (
     <div>
-      <h1>Round: {round}</h1>
-      <h1>Player1 score: {player1Score} </h1>
-      <h1>Player2 score: {player2Score} </h1>
-
-      <h3>Player1 guess is: {player1}</h3>
-      <h3>Player2 guess is: {player2}</h3>
-      <button onClick={handlePlay}>Play </button>
+      <h1>Controlled form</h1>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="">Username: </label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <label htmlFor="">Email: </label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <label htmlFor="">Password: </label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit">Submit</button>
+      </form>
+      <div>
+        {users.map((user) => (
+          <article key={user.id}>
+            <h3>{user.username}</h3>
+            <h3>{user.email}</h3>
+            <h3>{user.password}</h3>
+            <button type="button" onClick={() => handleClick(user.id)}>
+              delete
+            </button>
+          </article>
+        ))}
+      </div>
     </div>
   );
 };
