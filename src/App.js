@@ -1,67 +1,59 @@
 import React, { useEffect, useState } from 'react';
+import { useReducer } from 'react';
+import Products from './components/Products';
+
+import { reducer } from './reducer';
 
 const App = () => {
-  const userLi = localStorage.getItem('user');
-  const userList = userLi ? JSON.parse(userLi) : [];
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [users, setUsers] = useState(userList);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newUser = {
-      username: username,
-      password: password,
-      email: email,
-      id: new Date().getTime(),
-    };
-    setUsers((prev) => [...prev, newUser]);
+  const initialState = {
+    products: [],
+    cart: [],
+    loading: false,
+    error: false,
   };
+  const [state, dispatch] = useReducer(reducer, initialState);
+  console.log(state.cart);
+  const addToCart = (id) => {
+    const productInCart = state.cart.find((item) => item.id === id);
+    if (productInCart) {
+      dispatch({ type: 'UPDATE-CART', payload: id });
+    } else {
+      dispatch({ type: 'ADD-TO-CART', payload: id });
+    }
+  };
+  const amount = state.cart.reduce((acc, product) => {
+    return (acc += product.amount);
+  }, 0);
+  const deleteFromCart = () => {};
+
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(users));
-  }, [users]);
-  const handleClick = (id) => {
-    setUsers(users.filter((user) => user.id === id));
-  };
+    const fetchData = async () => {
+      try {
+        dispatch({ type: 'SET-LOADING' });
+        const resp = await fetch('https://fakestoreapi.com/products');
+        const data = await resp.json();
+        dispatch({ type: 'SUCCESS', payload: data });
+        console.log(data);
+      } catch (error) {
+        dispatch({ type: 'ERROR' });
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
+  if (state.loading) return <h1>Loading...</h1>;
+  if (state.error) return <h1>Oops! something went wrong</h1>;
   return (
     <div>
-      <h1>Controlled form</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="">Username: </label>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <label htmlFor="">Email: </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <label htmlFor="">Password: </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Submit</button>
-      </form>
-      <div>
-        {users.map((user) => (
-          <article key={user.id}>
-            <h3>{user.username}</h3>
-            <h3>{user.email}</h3>
-            <h3>{user.password}</h3>
-            <button type="button" onClick={() => handleClick(user.id)}>
-              delete
-            </button>
-          </article>
-        ))}
-      </div>
+      <span className="fixed right-10 top-2 bg-gray-900 text-white p-2 text-2xl">
+        {amount}
+      </span>
+      <h1>useReducer & useContext</h1>
+      <Products
+        products={state.products}
+        addToCart={addToCart}
+        deleteFromCart={deleteFromCart}
+      />
     </div>
   );
 };
@@ -90,7 +82,7 @@ export default App;
 // const [username, setUsername] = useState('cent-kanayo');
 // const [loading, setLoading] = useState(false);
 // const userRef = useRef(null);
-// const url = `https://api.github.com/users/${username}`;
+// const url = `https://api.github.com/products/${username}`;
 // useEffect(() => {
 //   const fetchData = async () => {
 //     try {

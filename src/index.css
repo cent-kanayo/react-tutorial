@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   padding: 0;
   margin: 0;
@@ -5,26 +9,4 @@
 }
 body {
   padding: 10px;
-}
-h1,
-h2,
-h3,
-h4 {
-  color: red;
-}
-.bgColor {
-  background-color: aqua;
-  padding: 10px 5px;
-}
-
-.item {
-  border: 1px solid gray;
-  /* width: 400px; */
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.single-product {
-  border: 1px solid gold;
-  margin: 10px;
 }
