@@ -1,61 +1,88 @@
-import React, { useEffect, useState } from 'react';
 import { useReducer } from 'react';
-import Products from './components/Products';
+import { useEffect, useState } from 'react';
+// import { reducer } from './reducer';
 
-import { reducer } from './reducer';
+const data = localStorage.getItem('data');
+const allProducts = data ? JSON.parse(data) : [];
+const initialState = {
+  loading: false,
+  products: [],
+  error: false,
+  cart: [],
+};
+
+const reducer = (state, action) => {
+  if (action.type === 'SET-LOADING') {
+    return {
+      ...state,
+      loading: true,
+    };
+  }
+  if (action.type === 'SUCCESS') {
+    return {
+      ...state,
+      loading: false,
+      products: action.payload,
+    };
+  }
+  if (action.type === 'SET-ERROR') {
+    return {
+      ...state,
+      loading: false,
+      error: true,
+    };
+  }
+  if (action.type === 'ADD-TO-CART') {
+    const getItem = state.products.find((item) => item.id === action.payload);
+    if (getItem) {
+      return {
+        ...state,
+        cart: [...state.cart, getItem],
+      };
+    }
+  }
+  if (action.type === 'CLEAR-CART') {
+    return {
+      ...state,
+      cart: [],
+    };
+  }
+  throw new Error('No matching action type');
+};
 
 const App = () => {
-  const initialState = {
-    products: [],
-    cart: [],
-    loading: false,
-    error: false,
-  };
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log(state.cart);
-  const addToCart = (id) => {
-    const productInCart = state.cart.find((item) => item.id === id);
-    if (productInCart) {
-      dispatch({ type: 'UPDATE-CART', payload: id });
-    } else {
-      dispatch({ type: 'ADD-TO-CART', payload: id });
-    }
-  };
-  const amount = state.cart.reduce((acc, product) => {
-    return (acc += product.amount);
-  }, 0);
-  const deleteFromCart = () => {};
-
+  const [user, setUser] = useState({ name: 'david' });
+  const url = 'https://fakestoreapi.com/products';
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchItems = async () => {
       try {
         dispatch({ type: 'SET-LOADING' });
-        const resp = await fetch('https://fakestoreapi.com/products');
-        const data = await resp.json();
-        dispatch({ type: 'SUCCESS', payload: data });
-        console.log(data);
+        const response = await fetch(url);
+        const allItems = await response.json();
+        localStorage.setItem('data', JSON.stringify(allItems));
+        dispatch({ type: 'SUCCESS', payload: allItems });
       } catch (error) {
-        dispatch({ type: 'ERROR' });
+        dispatch({ type: 'SET-ERROR' });
         console.log(error);
       }
     };
-    fetchData();
+    fetchItems();
   }, []);
-  if (state.loading) return <h1>Loading...</h1>;
-  if (state.error) return <h1>Oops! something went wrong</h1>;
-  return (
-    <div>
-      <span className="fixed right-10 top-2 bg-gray-900 text-white p-2 text-2xl">
-        {amount}
-      </span>
-      <h1>useReducer & useContext</h1>
-      <Products
-        products={state.products}
-        addToCart={addToCart}
-        deleteFromCart={deleteFromCart}
-      />
-    </div>
-  );
+
+  const addToCart = (id) => {
+    dispatch({ type: 'ADD-TO-CART', payload: id });
+  };
+  const deleteFromCart = (id) => {
+    dispatch({ type: 'DELETE-FROM-CART', payload: id });
+  };
+  const clearCart = () => {
+    dispatch({ type: 'CLEAR-CART' });
+  };
+  if (state.loading) return <h2>loading...</h2>;
+  if (state.error) return <h3>Oops! something went wrong</h3>;
+  console.log(state.products);
+  return <h1>Happy New Year</h1>;
 };
 
 export default App;
