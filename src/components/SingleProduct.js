@@ -1,33 +1,11 @@
-const SingleProduct = ({
-  id,
-  image,
-  description,
-  category,
-  rating: { rate, count },
-  price,
-  title,
-  addToCart,
-  deleteFromCart,
-}) => {
+import { useGlobalContext } from '../context';
+
+const SingleProduct = ({ product }) => {
+  const { addToCart, removeFromCart } = useGlobalContext();
   return (
-    <article className="bg-gray-900 p-8">
-      <header>
-        <h1 className="text-white text-3xl">{title}</h1>
-        <img src={image} alt={title} className="w-[400px] h-[500px]" />
-      </header>
-      <div>
-        <h3 className="text-orange-600 text-2xl">{category}</h3>
-        <h3 className="text-white text-2xl">{description.slice(0, 100)}...</h3>
-        <footer>
-          <p className="text-white text-xl">${price}</p>
-        </footer>
-        <button
-          className="bg-orange-600 px-8 py-4 text-gray-900 text-xl rounded-md"
-          onClick={() => addToCart(id)}
-        >
-          Add to cart
-        </button>
-      </div>
+    <article>
+      <h3>{product.category}</h3>
+      <img src={product.image} alt="" width="400" />
     </article>
   );
 };
