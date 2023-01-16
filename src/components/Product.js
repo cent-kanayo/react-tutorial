@@ -1,7 +1,7 @@
 import { useGlobalContext } from '../context';
 import SingleProduct from './SingleProduct';
 
-const Product = () => {
+const Products = () => {
   const { products } = useGlobalContext();
 
   return (
@@ -16,4 +16,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default Products;
