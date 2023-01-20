@@ -8,7 +8,22 @@ export const reducer = (state, action) => {
   if (action.type === 'SUCCESS') {
     return {
       ...state,
+      products: action.payload.products,
+      categories: action.payload.categories,
+      loading: false,
+    };
+  }
+  if (action.type === 'CATEGORY-PRODUCTS') {
+    return {
+      ...state,
       products: action.payload,
+      loading: false,
+    };
+  }
+  if (action.type === 'SINGLE-PRODUCT') {
+    return {
+      ...state,
+      singleProduct: action.payload,
       loading: false,
     };
   }
